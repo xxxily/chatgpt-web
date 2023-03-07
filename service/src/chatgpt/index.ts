@@ -110,7 +110,8 @@ async function chatConfig() {
       apiModel,
       reverseProxy: process.env.API_REVERSE_PROXY,
       timeoutMs,
-      socksProxy: (process.env.SOCKS_PROXY_HOST && process.env.SOCKS_PROXY_PORT) ? (`${process.env.SOCKS_PROXY_HOST}:${process.env.SOCKS_PROXY_PORT}`) : '-',
+      /* 禁止输出代理信息 */
+      // socksProxy: (process.env.SOCKS_PROXY_HOST && process.env.SOCKS_PROXY_PORT) ? (`${process.env.SOCKS_PROXY_HOST}:${process.env.SOCKS_PROXY_PORT}`) : '-',
     } as ModelConfig,
   })
 }
