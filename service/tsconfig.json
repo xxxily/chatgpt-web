@@ -11,6 +11,7 @@
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "node",
+    // "moduleResolution": "NodeNext",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "baseUrl": ".",
@@ -22,6 +23,7 @@
     "build"
   ],
   "include": [
-    "**/*.ts"
+    "**/*.ts",
+    "**/*.d.ts"
   ]
 }

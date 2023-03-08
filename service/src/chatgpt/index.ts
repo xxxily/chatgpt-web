@@ -6,6 +6,7 @@ import { SocksProxyAgent } from 'socks-proxy-agent'
 import fetch from 'node-fetch'
 import { sendResponse } from '../utils'
 import type { ApiModel, ChatContext, ChatGPTUnofficialProxyAPIOptions, ModelConfig } from '../types'
+import { getDatabase } from '../utils/db'
 
 dotenv.config()
 
@@ -88,12 +89,42 @@ async function chatReplyProcess(
         options = { ...lastContext }
     }
 
+    const db = await getDatabase()
+    const dbData = db.data ||= { chatList: [] }
+
+    let chat = {
+      data: [],
+      createdAt: new Date(),
+    }
+
+    let hasOldChat = false
+
+    if (lastContext && lastContext.parentMessageId) {
+      const oldChat = dbData.chatList.find(chat => chat.data[chat.data.length - 1].id === lastContext.parentMessageId)
+      chat = oldChat || chat
+
+      if (oldChat)
+        hasOldChat = true
+    }
+
     const response = await api.sendMessage(message, {
       ...options,
       onProgress: (partialResponse) => {
         process?.(partialResponse)
       },
     })
+
+    /* 存储聊天记录 */
+    chat.data.push({
+      createdAt: new Date(),
+      prompt: message,
+      ...response,
+    })
+
+    if (!hasOldChat)
+      dbData.chatList.push(chat)
+
+    db.write()
 
     return sendResponse({ type: 'Success', data: response })
   }
