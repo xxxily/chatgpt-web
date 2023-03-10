@@ -6,7 +6,7 @@ import { SocksProxyAgent } from 'socks-proxy-agent'
 import fetch from 'node-fetch'
 import { sendResponse } from '../utils'
 import type { ApiModel, ChatContext, ChatGPTUnofficialProxyAPIOptions, ModelConfig } from '../types'
-import { getDatabase } from '../utils/db'
+import { getDatabase, saveDatabase } from '../utils/db'
 
 const ErrorCodeMessage: Record<string, string> = {
   400: '[OpenAI] 模型的最大上下文长度是4096个令牌，请减少信息的长度。| This model\'s maximum context length is 4096 tokens.',
@@ -135,7 +135,7 @@ async function chatReplyProcess(
     if (!hasOldChat)
       dbData.chatList.push(chat)
 
-    db.write()
+    saveDatabase()
 
     return sendResponse({ type: 'Success', data: response })
   }

@@ -37,3 +37,21 @@ export async function getDatabase() {
 
   return db
 }
+
+let isSaving = false
+export async function saveDatabase() {
+  if (isSaving)
+    return
+
+  isSaving = true
+
+  try {
+    const db = await getDatabase()
+    await db.write()
+  }
+  catch (e) {
+    console.error('[saveDatabase]', e)
+  }
+
+  isSaving = false
+}
