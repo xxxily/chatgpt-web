@@ -33,6 +33,8 @@ const conversationList = computed(() => dataSources.value.filter(item => (!item.
 
 const prompt = ref<string>('')
 const loading = ref<boolean>(false)
+const usingContext = ref<boolean>(true)
+const actionVisible = ref<boolean>(true)
 
 function handleSubmit() {
   onConversation()
@@ -68,7 +70,7 @@ async function onConversation() {
   let options: Chat.ConversationRequest = {}
   const lastContext = conversationList.value[conversationList.value.length - 1]?.conversationOptions
 
-  if (lastContext)
+  if (lastContext && usingContext.value)
     options = { ...lastContext }
 
   addChat(
@@ -120,7 +122,6 @@ async function onConversation() {
         }
       },
     })
-    scrollToBottom()
   }
   catch (error: any) {
     const errorMessage = error?.message ?? t('common.wrong')
@@ -284,7 +285,9 @@ function handleExport() {
       try {
         d.loading = true
         const ele = document.getElementById('image-wrapper')
-        const canvas = await html2canvas(ele as HTMLDivElement)
+        const canvas = await html2canvas(ele as HTMLDivElement, {
+          useCORS: true,
+        })
         const imgUrl = canvas.toDataURL('image/png')
         const tempLink = document.createElement('a')
         tempLink.style.display = 'none'
@@ -363,6 +366,24 @@ function handleStop() {
   }
 }
 
+function toggleUsingContext() {
+  usingContext.value = !usingContext.value
+  if (usingContext.value)
+    ms.success(t('chat.turnOnContext'))
+  else
+    ms.warning(t('chat.turnOffContext'))
+}
+
+function onInputFocus() {
+  if (isMobile.value)
+    actionVisible.value = false
+}
+
+function onInputBlur() {
+  if (isMobile.value)
+    actionVisible.value = true
+}
+
 const placeholder = computed(() => {
   if (isMobile.value)
     return t('chat.placeholderMobile')
@@ -382,7 +403,7 @@ const wrapClass = computed(() => {
 const footerClass = computed(() => {
   let classes = ['p-4']
   if (isMobile.value)
-    classes = ['sticky', 'left-0', 'bottom-0', 'right-0', 'p-2', 'pr-4', 'overflow-hidden']
+    classes = ['sticky', 'left-0', 'bottom-0', 'right-0', 'p-2', 'overflow-hidden']
   return classes
 })
 
@@ -404,7 +425,11 @@ onUnmounted(() => {
         ref="scrollRef"
         class="h-full overflow-hidden overflow-y-auto"
       >
-        <div id="image-wrapper" class="w-full max-w-screen-xl m-auto" :class="[isMobile ? 'p-2' : 'p-4']">
+        <div
+          id="image-wrapper"
+          class="w-full max-w-screen-xl m-auto dark:bg-[#101014]"
+          :class="[isMobile ? 'p-2' : 'p-4']"
+        >
           <template v-if="!dataSources.length">
             <div class="flex items-center justify-center mt-4 text-center text-neutral-300">
               <SvgIcon icon="ri:bubble-chart-fill" class="mr-2 text-3xl" />
@@ -440,21 +465,30 @@ onUnmounted(() => {
     <footer :class="footerClass">
       <div class="w-full max-w-screen-xl m-auto">
         <div class="flex items-center justify-between space-x-2">
-          <HoverButton @click="handleClear">
-            <span class="text-xl text-[#4f555e] dark:text-white">
-              <SvgIcon icon="ri:delete-bin-line" />
-            </span>
-          </HoverButton>
-          <HoverButton @click="handleExport">
-            <span class="text-xl text-[#4f555e] dark:text-white">
-              <SvgIcon icon="ri:download-2-line" />
-            </span>
-          </HoverButton>
+          <div v-if="actionVisible" class="flex items-center space-x-2">
+            <HoverButton @click="handleClear">
+              <span class="text-xl text-[#4f555e] dark:text-white">
+                <SvgIcon icon="ri:delete-bin-line" />
+              </span>
+            </HoverButton>
+            <HoverButton @click="handleExport">
+              <span class="text-xl text-[#4f555e] dark:text-white">
+                <SvgIcon icon="ri:download-2-line" />
+              </span>
+            </HoverButton>
+            <HoverButton @click="toggleUsingContext">
+              <span class="text-xl" :class="{ 'text-[#4b9e5f]': usingContext, 'text-[#a8071a]': !usingContext }">
+                <SvgIcon icon="ri:chat-history-line" />
+              </span>
+            </HoverButton>
+          </div>
           <NInput
             v-model:value="prompt"
             type="textarea"
             :autosize="{ minRows: 1, maxRows: 2 }"
             :placeholder="placeholder"
+            @focus="onInputFocus"
+            @blur="onInputBlur"
             @keypress="handleEnter"
           />
           <NButton type="primary" :disabled="buttonDisabled" @click="handleSubmit">
