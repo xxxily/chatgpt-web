@@ -46,20 +46,75 @@ onMounted(() => {
       </h2>
       <div class="p-2 space-y-2 rounded-md bg-neutral-100 dark:bg-neutral-700">
         <p>
-          此项目开源于
+          此应用基于
           <a
             class="text-blue-600 dark:text-blue-500"
             href="https://github.com/Chanzhaoyu/chatgpt-web"
             target="_blank"
           >
-            Github
+            chatgpt-web
           </a>
-          ，免费且基于 MIT 协议，没有任何形式的付费行为！
+        </p>
+        <p>目前免费提供给大家使用，让更多人能连接到AI的世界。</p>
+        <p>服务器小，请轻点使用~</p>
+      </div>
+
+      <div class="p-2 space-y-2 rounded-md bg-neutral-100 dark:bg-neutral-700">
+        <p>
+          如果觉得网站对你有帮助，请给作者的其他作品，点个 Star 或者给予一点赞助，谢谢！
         </p>
         <p>
-          如果你觉得此项目对你有帮助，请在 Github 帮我点个 Star 或者给予一点赞助，谢谢！
+          -
+          <a
+            class="text-blue-600 dark:text-blue-500"
+            href="https://h5player.anzz.top/"
+            target="_blank"
+          >
+            HTML5视频增强脚本
+          </a>
+        </p>
+        <p>
+          -
+          <a
+            class="text-blue-600 dark:text-blue-500"
+            href="https://broadcast-message.anzz.top/"
+            target="_blank"
+          >
+            broadcast-message
+          </a>
+        </p>
+        <p>
+          -
+          <a
+            class="text-blue-600 dark:text-blue-500"
+            href="https://github.com/xxxily/monkey-script/tree/main/apps/web-record"
+            target="_blank"
+          >
+            web-record
+          </a>
+        </p>
+        <p>
+          -
+          <a
+            class="text-blue-600 dark:text-blue-500"
+            href="https://github.com/xxxily/Fiddler-plus"
+            target="_blank"
+          >
+            Fiddler plus
+          </a>
+        </p>
+        <p>
+          -
+          <a
+            class="text-blue-600 dark:text-blue-500"
+            href="https://github.com/xxxily/ffmpeg-script"
+            target="_blank"
+          >
+            ffmpeg-script
+          </a>
         </p>
       </div>
+
       <p>{{ $t("setting.api") }}：{{ config?.apiModel ?? '-' }}</p>
       <p v-if="isChatGPTAPI">
         {{ $t("setting.balance") }}：{{ config?.balance ?? '-' }}
