@@ -125,9 +125,12 @@ async function chatReplyProcess(
   catch (error: any) {
     const code = error.statusCode
     global.console.log(error)
+
+    const friendlyTips = '\n\nPS：应用目前免费提供给大家使用，让更多人能连接到AI的世界。\n服务器小，请轻点使用~\n'
+
     if (Reflect.has(ErrorCodeMessage, code))
-      return sendResponse({ type: 'Fail', message: ErrorCodeMessage[code] })
-    return sendResponse({ type: 'Fail', message: error.message ?? 'Please check the back-end console' })
+      return sendResponse({ type: 'Fail', message: ErrorCodeMessage[code] + friendlyTips })
+    return sendResponse({ type: 'Fail', message: `${error.message ?? 'Please check the back-end console'}${friendlyTips}` })
   }
 }
 
