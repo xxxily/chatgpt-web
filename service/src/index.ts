@@ -5,7 +5,7 @@ import { chatConfig, chatReplyProcess, currentModel } from './chatgpt'
 import { auth } from './middleware/auth'
 import { rateLimiter } from './middleware/rateLimiter'
 import { isNotEmptyString } from './utils/is'
-import logsChat from './logs/chat'
+import logsChat from './logsMod/chat'
 
 const app = express()
 const router = express.Router()
