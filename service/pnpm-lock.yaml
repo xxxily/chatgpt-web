@@ -16,6 +16,7 @@ specifiers:
   isomorphic-fetch: ^3.0.0
   lowdb: ^5.1.0
   node-fetch: ^3.3.0
+  rate-limiter-flexible: ^2.4.1
   rimraf: ^4.3.0
   socks-proxy-agent: ^7.0.0
   tsup: ^6.6.3
@@ -33,6 +34,7 @@ dependencies:
   isomorphic-fetch: 3.0.0
   lowdb: 5.1.0
   node-fetch: 3.3.0
+  rate-limiter-flexible: 2.4.1
   socks-proxy-agent: 7.0.0
 
 devDependencies:
@@ -3035,6 +3037,10 @@ packages:
   /range-parser/1.2.1:
     resolution: {integrity: sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==}
     engines: {node: '>= 0.6'}
+    dev: false
+
+  /rate-limiter-flexible/2.4.1:
+    resolution: {integrity: sha512-dgH4T44TzKVO9CLArNto62hJOwlWJMLUjVVr/ii0uUzZXEXthDNr7/yefW5z/1vvHAfycc1tnuiYyNJ8CTRB3g==}
     dev: false
 
   /raw-body/2.5.1:

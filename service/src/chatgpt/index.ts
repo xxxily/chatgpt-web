@@ -9,7 +9,6 @@ import axios from 'axios'
 import { sendResponse } from '../utils'
 import { isNotEmptyString } from '../utils/is'
 import type { ApiModel, ChatContext, ChatGPTUnofficialProxyAPIOptions, ModelConfig } from '../types'
-import { getDatabase, saveDatabase } from '../utils/db'
 import type { RequestOptions } from './types'
 
 const { HttpsProxyAgent } = httpsProxyAgent
@@ -105,42 +104,12 @@ async function chatReplyProcess(options: RequestOptions) {
         options = { ...lastContext }
     }
 
-    const db = await getDatabase()
-    const dbData = db.data ||= { chatList: [] }
-
-    let chat = {
-      data: [],
-      createdAt: new Date(),
-    }
-
-    let hasOldChat = false
-
-    if (lastContext && lastContext.parentMessageId) {
-      const oldChat = dbData.chatList.find(chat => chat.data[chat.data.length - 1].id === lastContext.parentMessageId)
-      chat = oldChat || chat
-
-      if (oldChat)
-        hasOldChat = true
-    }
-
     const response = await api.sendMessage(message, {
       ...options,
       onProgress: (partialResponse) => {
         process?.(partialResponse)
       },
     })
-
-    /* 存储聊天记录 */
-    chat.data.push({
-      createdAt: new Date(),
-      prompt: message,
-      ...response,
-    })
-
-    if (!hasOldChat)
-      dbData.chatList.push(chat)
-
-    saveDatabase()
 
     return sendResponse({ type: 'Success', data: response })
   }

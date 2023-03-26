@@ -177,7 +177,7 @@ async function onConversation() {
         +uuid,
         dataSources.value.length - 1,
         {
-          text: `${currentChat.text}\n[${errorMessage}]`,
+          text: `${currentChat.text}\n${errorMessage}`,
           error: false,
           loading: false,
         },
@@ -484,6 +484,12 @@ onUnmounted(() => {
           :class="[isMobile ? 'p-2' : 'p-4']"
         >
           <template v-if="!dataSources.length">
+            <div class="flex items-center justify-center mt-4 text-center text-neutral-300">
+              <span>服务器小，请轻点使用~</span>
+            </div>
+            <div class="flex items-center justify-center mt-4 text-center text-neutral-300">
+              <span>网站免费提供给大家使用，让更多人能连接到AI的世界。</span>
+            </div>
             <div class="flex items-center justify-center mt-4 text-center text-neutral-300">
               <SvgIcon icon="ri:bubble-chart-fill" class="mr-2 text-3xl" />
               <span>Aha~</span>

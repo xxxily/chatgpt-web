@@ -3,8 +3,9 @@ import type { RequestProps } from './types'
 import type { ChatMessage } from './chatgpt'
 import { chatConfig, chatReplyProcess, currentModel } from './chatgpt'
 import { auth } from './middleware/auth'
-import { limiter } from './middleware/limiter'
+import { rateLimiter } from './middleware/rateLimiter'
 import { isNotEmptyString } from './utils/is'
+import logsChat from './logs/chat'
 
 const app = express()
 const router = express.Router()
@@ -19,13 +20,13 @@ app.all('*', (_, res, next) => {
   next()
 })
 
-router.post('/chat-process', [auth, limiter], async (req, res) => {
+router.post('/chat-process', [auth, rateLimiter], async (req, res) => {
   res.setHeader('Content-type', 'application/octet-stream')
 
   try {
     const { prompt, options = {}, systemMessage } = req.body as RequestProps
     let firstChunk = true
-    await chatReplyProcess({
+    const result = await chatReplyProcess({
       message: prompt,
       lastContext: options,
       process: (chat: ChatMessage) => {
@@ -34,6 +35,13 @@ router.post('/chat-process', [auth, limiter], async (req, res) => {
       },
       systemMessage,
     })
+
+    try {
+      logsChat(req, res, result)
+    }
+    catch (err) {
+      console.error('[logsChat error]', err)
+    }
   }
   catch (error) {
     res.write(JSON.stringify(error))
