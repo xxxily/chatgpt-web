@@ -43,7 +43,11 @@ export async function getDatabase(opts: DatabaseOpts = {
 
   /* 移除旧的基于日期递增的数据库文件，防止内存堆积 */
   for (const key in dbList) {
-    if (!key.includes(dayId))
+    const dbInfo = dbList[key]
+    if (dbInfo.useDayId && !key.includes(dayId))
+      delete dbList[dbId]
+
+    else if (dbInfo.lastSaveTime && (Date.now() - dbInfo.lastSaveTime) > 1000 * 60 * 60 * 24)
       delete dbList[dbId]
   }
 
@@ -55,11 +59,12 @@ export async function getDatabase(opts: DatabaseOpts = {
 
   dbList[dbId] = {
     db,
+    useDayId,
     saveing: false,
     saveQueue: [],
     name: dbName,
     dir: dbDir,
-    lastSaveTime: new Date(),
+    lastSaveTime: Date.now(),
   }
 
   return db
@@ -100,7 +105,7 @@ export async function saveDatabase(opts: DatabaseOpts = {
     for (const { resolve } of saveQueue)
       resolve()
 
-    dbInfo.lastSaveTime = new Date()
+    dbInfo.lastSaveTime = Date.now()
   }
   catch (e) {
     for (const { reject } of saveQueue)

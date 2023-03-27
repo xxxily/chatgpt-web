@@ -491,6 +491,9 @@ onUnmounted(() => {
               <span>网站免费提供给大家使用，让更多人能连接到AI的世界。</span>
             </div>
             <div class="flex items-center justify-center mt-4 text-center text-neutral-300">
+              <span>网站限制和隐私说明参见：<a href="https://hello-ai.anzz.top/home/" target="_blank" class="text-[#4b9e5f]">Hello-AI</a></span>
+            </div>
+            <div class="flex items-center justify-center mt-4 text-center text-neutral-300">
               <SvgIcon icon="ri:bubble-chart-fill" class="mr-2 text-3xl" />
               <span>Aha~</span>
             </div>

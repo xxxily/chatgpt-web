@@ -4,8 +4,10 @@ import type { ChatMessage } from './chatgpt'
 import { chatConfig, chatReplyProcess, currentModel } from './chatgpt'
 import { auth } from './middleware/auth'
 import { rateLimiter } from './middleware/rateLimiter'
+import { strlen } from './middleware/strlen'
 import { isNotEmptyString } from './utils/is'
 import logsChat from './logsMod/chat'
+import logsPrompt from './logsMod/prompt'
 
 const app = express()
 const router = express.Router()
@@ -20,8 +22,25 @@ app.all('*', (_, res, next) => {
   next()
 })
 
-router.post('/chat-process', [auth, rateLimiter], async (req, res) => {
+router.post('/chat-process', [
+  auth,
+
+  /* 请求频率限制中间件 */
+  rateLimiter,
+
+  /* 字符串长度限制中间件 */
+  strlen({
+    field: 'prompt',
+  }),
+], async (req, res) => {
   res.setHeader('Content-type', 'application/octet-stream')
+
+  try {
+    logsPrompt(req)
+  }
+  catch (err) {
+    console.error('[logsPrompt error]', err)
+  }
 
   try {
     const { prompt, options = {}, systemMessage } = req.body as RequestProps

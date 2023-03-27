@@ -15,7 +15,7 @@ export default async function logsChat(req: Request, res: Response, chatData: an
 
   let chat = {
     data: [],
-    createdAt: new Date(),
+    createdAt: Date.now(),
   }
 
   let hasOldChat = false
@@ -30,7 +30,7 @@ export default async function logsChat(req: Request, res: Response, chatData: an
 
   /* 存储聊天记录 */
   chat.data.push({
-    createdAt: new Date(),
+    createdAt: Date.now(),
     reqInfo: {
       ip: req.headers['x-real-ip'] || req.ip,
       ua: req.headers['user-agent'],
