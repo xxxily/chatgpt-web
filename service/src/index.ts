@@ -1,4 +1,5 @@
 import express from 'express'
+import cookieParser from 'cookie-parser'
 import type { RequestProps } from './types'
 import type { ChatMessage } from './chatgpt'
 import { chatConfig, chatReplyProcess, currentModel } from './chatgpt'
@@ -7,13 +8,15 @@ import { rateLimiter } from './middleware/rateLimiter'
 import { strlen } from './middleware/strlen'
 import { isNotEmptyString } from './utils/is'
 import logsChat from './logsMod/chat'
-import logsPrompt from './logsMod/prompt'
+// import logsPrompt from './logsMod/prompt'
+import { createTempJwtToken } from './utils/helper'
 
 const app = express()
 const router = express.Router()
 
 app.use(express.static('public'))
 app.use(express.json())
+app.use(cookieParser())
 
 app.all('*', (_, res, next) => {
   res.header('Access-Control-Allow-Origin', '*')
@@ -35,12 +38,12 @@ router.post('/chat-process', [
 ], async (req, res) => {
   res.setHeader('Content-type', 'application/octet-stream')
 
-  try {
-    logsPrompt(req)
-  }
-  catch (err) {
-    console.error('[logsPrompt error]', err)
-  }
+  // try {
+  //   logsPrompt(req)
+  // }
+  // catch (err) {
+  //   console.error('[logsPrompt error]', err)
+  // }
 
   try {
     const { prompt, options = {}, systemMessage } = req.body as RequestProps
@@ -82,6 +85,11 @@ router.post('/config', auth, async (req, res) => {
 
 router.post('/session', async (req, res) => {
   try {
+    if (!req.cookies['ACCESS-TOKEN'] && !req.cookies['TEMP-ACCESS-TOKEN']) {
+      /* 给未登录用户设置临时token */
+      res.cookie('TEMP-ACCESS-TOKEN', createTempJwtToken(), { maxAge: 1000 * 60 * 60 * 24 * 60, httpOnly: true })
+    }
+
     const AUTH_SECRET_KEY = process.env.AUTH_SECRET_KEY
     const hasAuth = isNotEmptyString(AUTH_SECRET_KEY)
     res.send({ status: 'Success', message: '', data: { auth: hasAuth, model: currentModel() } })

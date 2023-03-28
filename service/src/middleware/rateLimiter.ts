@@ -1,7 +1,9 @@
 import type { Request, Response } from 'express'
 import { RateLimiterMemory } from 'rate-limiter-flexible'
 import { isNotEmptyString } from '../utils/is'
+import { getJwtToken, getJwtTokenPayload } from '../utils/helper'
 import JSON_DB from '../utils/db'
+import type { RequestProps } from '../types'
 
 const MAX_REQUEST_PER_MINUTE = process.env.MAX_REQUEST_PER_MINUTE
 const MAX_REQUEST_PER_HOUR = process.env.MAX_REQUEST_PER_HOUR
@@ -31,6 +33,38 @@ const limitIpDbOpts = {
   useDayId: false,
 }
 
+const dataStatisticsDbOpts = {
+  dir: './',
+  name: 'data_statistics',
+  useDayId: true,
+}
+
+/* 统计通过速率限制后的请求，以便进一步识别滥用情况 */
+async function dataStatistics(req: Request, userInfo: any, realIp: string, token: string) {
+  const reqBody = req.body as RequestProps
+  const ua = req.headers['user-agent']
+  const db = await JSON_DB.get(dataStatisticsDbOpts)
+  const dbData = db.data = db.data ? db.data : { data: {}, ipInfo: {}, total: 0 }
+  const currentTimestamp = Date.now()
+
+  /* token维度的统计 */
+  dbData.total += 1
+  const tokenData = dbData.data[token] = dbData.data[token] ? dbData.data[token] : { createdAt: currentTimestamp, count: 0, prompts: [], ip: [], timestamp: [], userInfo }
+  tokenData.count += 1
+  tokenData.ip.includes(realIp) || tokenData.ip.push(realIp)
+  tokenData.timestamp.push(currentTimestamp)
+  tokenData.prompts.push(reqBody.prompt)
+
+  /* ip维度的统计 */
+  const ipData = dbData.ipInfo[realIp] = dbData.ipInfo[realIp] ? dbData.ipInfo[realIp] : { createdAt: currentTimestamp, count: 0, token: [], devices: [], timestamp: [] }
+  ipData.count += 1
+  ipData.token.includes(token) || ipData.token.push(token)
+  ipData.devices.includes(ua) || ipData.devices.push(ua)
+  ipData.timestamp.push(currentTimestamp)
+
+  await JSON_DB.save(dataStatisticsDbOpts)
+}
+
 /**
  * https://github.com/animir/node-rate-limiter-flexible/wiki/Memory
  * https://github.com/animir/node-rate-limiter-flexible/wiki/Options
@@ -56,8 +90,16 @@ const rateLimiterIpByDay = new RateLimiterMemory({
 const friendlyTips = LIMIT_MAP.FRYENDLY_TIPS || '\n\n[温馨提示]\n为了让更多人连接到AI的世界，建议提升问题质量并理性提问。 \n服务器小，请轻点使用~\n'
 
 const rateLimiter = async (req: Request, res: Response, next) => {
+  const userInfo = getJwtTokenPayload(req)
+
+  if (!userInfo) {
+    res.send({ status: 'Unauthorized', message: '鉴权失败，请刷新重试或联系管理员 | Authentication failed, please refresh and try again or contact the administrator', data: null })
+    return
+  }
+
+  const token = getJwtToken(req)
   const realIp = (req.headers['x-real-ip'] || req.ip) as string
-  const limitCharacter = `${realIp}-${req.headers['user-agent']}`
+  const limitCharacter = userInfo.userId === '-1' ? token : `${userInfo.userId}-${token}`
 
   const db = await JSON_DB.get(limitIpDbOpts)
   const dbData = db.data = db.data ? db.data : { blacklist: {}, whitelist: {} }
@@ -65,6 +107,12 @@ const rateLimiter = async (req: Request, res: Response, next) => {
   /* 如果ip处于白名单列表，则直接放行 */
   if (dbData.whitelist[realIp]) {
     next()
+    try {
+      dataStatistics(req, userInfo, realIp, token)
+    }
+    catch (e) {
+      global.console.error('[rateLimiter][dataStatistics][error]', e)
+    }
     return
   }
 
@@ -106,6 +154,13 @@ const rateLimiter = async (req: Request, res: Response, next) => {
         rateLimiterSession.consume(limitCharacter)
           .then(() => {
             next()
+
+            try {
+              dataStatistics(req, userInfo, realIp, token)
+            }
+            catch (e) {
+              global.console.error('[rateLimiter][dataStatistics][error]', e)
+            }
           })
           .catch(() => {
             res.status(200).send({

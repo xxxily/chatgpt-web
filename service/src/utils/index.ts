@@ -1,3 +1,5 @@
+import crypto from 'crypto'
+
 interface SendResponseOptions<T = any> {
   type: 'Success' | 'Fail'
   message?: string
@@ -19,4 +21,9 @@ export function sendResponse<T>(options: SendResponseOptions<T>) {
     data: options.data ?? null,
     status: options.type,
   })
+}
+
+/* 根据给定字符串生成字符串对应的md5 */
+export function md5(str: string) {
+  return crypto.createHash('md5').update(str).digest('hex')
 }
