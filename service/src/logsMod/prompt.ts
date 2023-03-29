@@ -27,7 +27,7 @@ export default async function logsPrompt(req: Request) {
   const db = await JSON_DB.get(promptDbOpts)
   const dbData = db.data = db.data ? db.data : { promptList: {} }
   const reqBody = req.body as RequestProps
-  const realIp = (req.headers['x-real-ip'] || req.ip) as string
+  const realIp = (req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || req.ip) as string
 
   const data = dbData.promptList[realIp] = dbData.promptList[realIp] || {
     createdAt: Date.now(),

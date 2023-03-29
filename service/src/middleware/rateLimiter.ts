@@ -98,7 +98,7 @@ const rateLimiter = async (req: Request, res: Response, next) => {
   }
 
   const token = getJwtToken(req)
-  const realIp = (req.headers['x-real-ip'] || req.ip) as string
+  const realIp = (req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || req.ip) as string
   const limitCharacter = userInfo.userId === '-1' ? token : `${userInfo.userId}-${token}`
 
   const db = await JSON_DB.get(limitIpDbOpts)

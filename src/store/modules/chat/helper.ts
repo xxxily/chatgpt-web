@@ -6,7 +6,9 @@ export function defaultState(): Chat.ChatState {
   const uuid = 1002
   return {
     active: uuid,
-    usingContext: true,
+    /* 默认开启这个会消耗大量token，目前先在前端禁用，后面考虑在后端禁用 */
+    usingContext: false,
+
     history: [{ uuid, title: 'New Chat', isEdit: false }],
     chat: [{ uuid, data: [] }],
   }

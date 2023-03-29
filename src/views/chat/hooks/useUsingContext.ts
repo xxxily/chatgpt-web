@@ -10,10 +10,12 @@ export function useUsingContext() {
 
   function toggleUsingContext() {
     chatStore.setUsingContext(!usingContext.value)
-    if (usingContext.value)
-      ms.success(t('chat.turnOnContext'))
-    else
-      ms.warning(t('chat.turnOffContext'))
+    if (usingContext.value) {
+      ms.warning(t('chat.turnOnContext'), {
+        duration: 1000 * 10,
+      })
+    }
+    else { ms.success(t('chat.turnOffContext')) }
   }
 
   return {

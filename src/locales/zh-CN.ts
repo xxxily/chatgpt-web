@@ -40,7 +40,7 @@ export default {
     exportSuccess: '保存成功',
     exportFailed: '保存失败',
     usingContext: '上下文模式',
-    turnOnContext: '当前模式下, 发送消息会携带之前的聊天记录',
+    turnOnContext: '当前模式下, 发送消息会携带之前的聊天记录，会成倍地提高AIP调用费用成本，如无需要不建议开启。',
     turnOffContext: '当前模式下, 发送消息不会携带之前的聊天记录',
     deleteMessage: '删除消息',
     deleteMessageConfirm: '是否删除此消息?',
@@ -68,6 +68,9 @@ export default {
     socks: 'Socks',
     httpsProxy: 'HTTPS Proxy',
     balance: 'API余额',
+    apiKeyManage: '私Key管理',
+    apiKey: '私Key',
+    model: '模型',
   },
   store: {
     local: '本地',

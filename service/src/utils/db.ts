@@ -31,7 +31,7 @@ export async function getDatabase(opts: DatabaseOpts = {
   dir: './',
   name: 'db',
   useDayId: true,
-}) {
+}, autoCache = true) {
   const { dir, name, useDayId } = opts
   const dayId = getDayId()
   const dbDir = join(rootPath, dir)
@@ -57,14 +57,17 @@ export async function getDatabase(opts: DatabaseOpts = {
   const db = new Low(new JSONFile<LowdbData>(file))
   await db.read()
 
-  dbList[dbId] = {
-    db,
-    useDayId,
-    saveing: false,
-    saveQueue: [],
-    name: dbName,
-    dir: dbDir,
-    lastSaveTime: Date.now(),
+  /* 缓存起来方便快速访问 */
+  if (autoCache) {
+    dbList[dbId] = {
+      db,
+      useDayId,
+      saveing: false,
+      saveQueue: [],
+      name: dbName,
+      dir: dbDir,
+      lastSaveTime: Date.now(),
+    }
   }
 
   return db

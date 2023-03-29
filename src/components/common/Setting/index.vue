@@ -64,6 +64,15 @@ const show = computed({
             <General />
           </div>
         </NTabPane>
+        <!-- <NTabPane name="ApiKeyManage" tab="ApiKeyManage">
+          <template #tab>
+            <SvgIcon class="text-lg" icon="ri:list-settings-line" />
+            <span class="ml-2">{{ $t('setting.apiKeyManage') }}</span>
+          </template>
+          <div class="min-h-[100px]">
+            <ApiKeyManage />
+          </div>
+        </NTabPane> -->
       </NTabs>
     </div>
   </NModal>

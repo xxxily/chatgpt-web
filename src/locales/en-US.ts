@@ -40,7 +40,7 @@ export default {
     exportSuccess: 'Export Success',
     exportFailed: 'Export Failed',
     usingContext: 'Context Mode',
-    turnOnContext: 'In the current mode, sending messages will carry previous chat records.',
+    turnOnContext: 'In the current mode, sending messages will carry the previous chat records, which will double the cost of AIP calls. It is not recommended to enable it if there is no need.',
     turnOffContext: 'In the current mode, sending messages will not carry previous chat records.',
     deleteMessage: 'Delete Message',
     deleteMessageConfirm: 'Are you sure to delete this message?',

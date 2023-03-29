@@ -40,7 +40,7 @@ export default {
     exportSuccess: '儲存成功',
     exportFailed: '儲存失敗',
     usingContext: '上下文模式',
-    turnOnContext: '啟用上下文模式，在此模式下，發送訊息會包含之前的聊天記錄。',
+    turnOnContext: '當前模式下, 發送消息會攜帶之前的聊天記錄，會成倍地提高AIP調用費用成本，如無需要不建議開啟。',
     turnOffContext: '關閉上下文模式，在此模式下，發送訊息不會包含之前的聊天記錄。',
     deleteMessage: '刪除訊息',
     deleteMessageConfirm: '是否刪除此訊息?',
