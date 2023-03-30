@@ -2,6 +2,7 @@ import type { Request, Response } from 'express'
 import { RateLimiterMemory } from 'rate-limiter-flexible'
 import { isNotEmptyString } from '../utils/is'
 import { getJwtToken, getJwtTokenPayload } from '../utils/helper'
+import { formatDate } from '../utils/index'
 import JSON_DB from '../utils/db'
 import type { RequestProps } from '../types'
 
@@ -44,23 +45,31 @@ async function dataStatistics(req: Request, userInfo: any, realIp: string, token
   const reqBody = req.body as RequestProps
   const ua = req.headers['user-agent']
   const db = await JSON_DB.get(dataStatisticsDbOpts)
-  const dbData = db.data = db.data ? db.data : { data: {}, ipInfo: {}, total: 0 }
+  const dbData = db.data = db.data ? db.data : { ipInfo: {}, data: {}, total: 0 }
   const currentTimestamp = Date.now()
 
   /* token维度的统计 */
   dbData.total += 1
-  const tokenData = dbData.data[token] = dbData.data[token] ? dbData.data[token] : { createdAt: currentTimestamp, count: 0, prompts: [], ip: [], timestamp: [], userInfo }
+  const tokenData = dbData.data[token] = dbData.data[token] ? dbData.data[token] : { createdAt: currentTimestamp, count: 0, prompts: [], ip: [], humanTimestamp: [], timestamp: [], userInfo }
   tokenData.count += 1
   tokenData.ip.includes(realIp) || tokenData.ip.push(realIp)
   tokenData.timestamp.push(currentTimestamp)
   tokenData.prompts.push(reqBody.prompt)
 
+  if (!tokenData.humanTimestamp)
+    tokenData.humanTimestamp = []
+  tokenData.humanTimestamp.push(formatDate(currentTimestamp, 'HH:mm:ss'))
+
   /* ip维度的统计 */
-  const ipData = dbData.ipInfo[realIp] = dbData.ipInfo[realIp] ? dbData.ipInfo[realIp] : { createdAt: currentTimestamp, count: 0, token: [], devices: [], timestamp: [] }
+  const ipData = dbData.ipInfo[realIp] = dbData.ipInfo[realIp] ? dbData.ipInfo[realIp] : { createdAt: currentTimestamp, count: 0, token: [], devices: [], humanTimestamp: [], timestamp: [] }
   ipData.count += 1
   ipData.token.includes(token) || ipData.token.push(token)
   ipData.devices.includes(ua) || ipData.devices.push(ua)
   ipData.timestamp.push(currentTimestamp)
+
+  if (!ipData.humanTimestamp)
+    ipData.humanTimestamp = []
+  ipData.humanTimestamp.push(formatDate(currentTimestamp, 'HH:mm:ss'))
 
   await JSON_DB.save(dataStatisticsDbOpts)
 }

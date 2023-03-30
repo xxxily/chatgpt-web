@@ -55,7 +55,7 @@ onMounted(() => {
             chatgpt-web
           </a>
         </p>
-        <p>目前免费提供给大家使用，让更多人能连接到AI的世界。</p>
+        <p>公益ChatGPT，且用且珍惜，加群防失联（群信息见Hello-AI）</p>
         <p>服务器小，请轻点使用~</p>
       </div>
 

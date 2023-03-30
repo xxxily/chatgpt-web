@@ -52,7 +52,7 @@ function handleReset() {
             style="width: 140px"
             :value="model"
             :options="modelOptions"
-            @update-value="value => model.setValue(value)"
+            @update-value="value => value"
           />
         </div>
       </div>
