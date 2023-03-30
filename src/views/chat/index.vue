@@ -39,7 +39,17 @@ const { uuid } = route.params as { uuid: string }
 const dataSources = computed(() => chatStore.getChatByUuid(+uuid))
 const conversationList = computed(() => dataSources.value.filter(item => (!item.inversion && !item.error)))
 
-const prompt = ref<string>('')
+const urlInfo = new URL(location.href)
+const prompt = ref<string>(decodeURIComponent(urlInfo.searchParams.get('prompt') || ''))
+
+/* 取完值后，删除url中的prompt参数 */
+if (urlInfo.searchParams.get('prompt')) {
+  setTimeout(() => {
+    urlInfo.searchParams.delete('prompt')
+    history.replaceState(null, '', urlInfo.href)
+  }, 0)
+}
+
 const loading = ref<boolean>(false)
 const inputRef = ref<Ref | null>(null)
 
@@ -492,6 +502,9 @@ onUnmounted(() => {
             </div>
             <div class="flex items-center justify-center mt-4 text-center text-neutral-300">
               <span>网站限制和隐私说明参见：<a href="https://hello-ai.anzz.top/home/" target="_blank" class="text-[#4b9e5f]">Hello-AI</a></span>
+            </div>
+            <div class="flex items-center justify-center mt-4 text-center text-neutral-300">
+              <span>有趣实用的玩法参见：<a href="https://hello-ai.anzz.top/home/chatgptPrompts.html" target="_blank" class="text-[#4b9e5f]">中文调教指南</a></span>
             </div>
             <div class="flex items-center justify-center mt-4 text-center text-neutral-300">
               <SvgIcon icon="ri:bubble-chart-fill" class="mr-2 text-3xl" />

@@ -12,7 +12,7 @@ export function useUsingContext() {
     chatStore.setUsingContext(!usingContext.value)
     if (usingContext.value) {
       ms.warning(t('chat.turnOnContext'), {
-        duration: 1000 * 10,
+        duration: 1000 * 8,
       })
     }
     else { ms.success(t('chat.turnOffContext')) }
