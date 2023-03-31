@@ -24,6 +24,7 @@ const ErrorCodeMessage: Record<string, string> = {
   500: '[OpenAI] 服务器繁忙，请稍后再试 | Internal Server Error',
 }
 
+const defaultSystemMessage = process.env.DEFAULT_SYSTEM_MESSAGE || ''
 const timeoutMs: number = !isNaN(+process.env.TIMEOUT_MS) ? +process.env.TIMEOUT_MS : 30 * 1000
 
 let apiModel: ApiModel
@@ -93,7 +94,10 @@ async function chatReplyProcess(options: RequestOptions) {
     let options: SendMessageOptions = { timeoutMs }
 
     if (apiModel === 'ChatGPTAPI') {
-      if (isNotEmptyString(systemMessage))
+      if (isNotEmptyString(defaultSystemMessage))
+        options.systemMessage = defaultSystemMessage
+
+      else if (isNotEmptyString(systemMessage))
         options.systemMessage = systemMessage
     }
 
