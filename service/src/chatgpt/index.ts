@@ -97,7 +97,7 @@ async function chatReplyProcess(options: RequestOptions) {
       if (isNotEmptyString(defaultSystemMessage))
         options.systemMessage = defaultSystemMessage
 
-      else if (isNotEmptyString(systemMessage))
+      if (isNotEmptyString(systemMessage) && !systemMessage.includes('trained by OpenAI'))
         options.systemMessage = systemMessage
     }
 
