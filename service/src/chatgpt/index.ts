@@ -109,7 +109,7 @@ async function chatReplyProcess(options: RequestOptions) {
           options.parentMessageId = lastContext.parentMessageId
 
         else
-          options.systemMessage = `${options.systemMessage}，服务器压力大，提醒用户当前已禁用了连续对话功能，请用户理解`
+          options.systemMessage = `${options.systemMessage}。另外：如出现令你理解上下文信息困难时，是因为大量用户滥用，造成了API金额消耗过快，提醒用户已禁用了连续对话功能，请用户理解，如有能力请给予支持，才能持续发展`
       }
       else { options = { ...lastContext } }
     }
