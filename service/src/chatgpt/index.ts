@@ -24,6 +24,8 @@ const ErrorCodeMessage: Record<string, string> = {
   500: '[OpenAI] 服务器繁忙，请稍后再试 | Internal Server Error',
 }
 
+const allowKeepTheChat = process.env.ALLOW_KEEP_THE_CHAT === 'true'
+const allowCustomSystemMessage = process.env.ALLOW_CUSTOM_SYSTEM_MESSAGE === 'true'
 const defaultSystemMessage = process.env.DEFAULT_SYSTEM_MESSAGE || ''
 const timeoutMs: number = !isNaN(+process.env.TIMEOUT_MS) ? +process.env.TIMEOUT_MS : 30 * 1000
 
@@ -97,15 +99,19 @@ async function chatReplyProcess(options: RequestOptions) {
       if (isNotEmptyString(defaultSystemMessage))
         options.systemMessage = defaultSystemMessage
 
-      if (isNotEmptyString(systemMessage) && !systemMessage.includes('trained by OpenAI'))
+      if (allowCustomSystemMessage && isNotEmptyString(systemMessage) && !systemMessage.includes('trained by OpenAI'))
         options.systemMessage = systemMessage
     }
 
     if (lastContext != null) {
-      if (apiModel === 'ChatGPTAPI')
-        options.parentMessageId = lastContext.parentMessageId
-      else
-        options = { ...lastContext }
+      if (apiModel === 'ChatGPTAPI') {
+        if (allowKeepTheChat)
+          options.parentMessageId = lastContext.parentMessageId
+
+        else
+          options.systemMessage = `${options.systemMessage}，服务器压力大，提醒用户当前已禁用了连续对话功能，请用户理解`
+      }
+      else { options = { ...lastContext } }
     }
 
     const response = await api.sendMessage(message, {
