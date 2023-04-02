@@ -24,6 +24,7 @@ const ErrorCodeMessage: Record<string, string> = {
   500: '[OpenAI] 服务器繁忙，请稍后再试 | Internal Server Error',
 }
 
+const FRYENDLY_TIPS = process.env.FRYENDLY_TIPS
 const allowKeepTheChat = process.env.ALLOW_KEEP_THE_CHAT === 'true'
 const allowCustomSystemMessage = process.env.ALLOW_CUSTOM_SYSTEM_MESSAGE === 'true'
 const defaultSystemMessage = process.env.DEFAULT_SYSTEM_MESSAGE || ''
@@ -128,7 +129,7 @@ async function chatReplyProcess(options: RequestOptions) {
     global.console.log(error)
 
     // const friendlyTips = '\n\nPS：应用目前免费提供给大家使用，让更多人能连接到AI的世界。\n服务器小，请轻点使用~\n'
-    const friendlyTips = `
+    const friendlyTips = FRYENDLY_TIPS || `
 \n\n[温馨提示]\n 当你看到这个的时候，说明账号已经被干报废，站长已经努力过了。
 \n 想继续免费使用，可以参见这份免费列表[Free ChatGPT Site List](https://hello-ai.anzz.top/home/FreeChatGPTSiteList.html) 
 \n\n 期待[Hello-AI](https://hello-ai.anzz.top/)的后续服务，请关注一下Hello-AI的[github](https://github.com/xxxily/hello-ai)，或加群沟通。
