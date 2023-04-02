@@ -127,7 +127,18 @@ async function chatReplyProcess(options: RequestOptions) {
     const code = error.statusCode
     global.console.log(error)
 
-    const friendlyTips = '\n\nPS：应用目前免费提供给大家使用，让更多人能连接到AI的世界。\n服务器小，请轻点使用~\n'
+    // const friendlyTips = '\n\nPS：应用目前免费提供给大家使用，让更多人能连接到AI的世界。\n服务器小，请轻点使用~\n'
+    const friendlyTips = `
+\n\n[温馨提示]\n 当你看到这个的时候，说明账号已经被干报废，站长已经努力过了。
+\n 如果你想继续免费使用，可以参见这份免费列表[Free ChatGPT Site List](https://hello-ai.anzz.top/home/FreeChatGPTSiteList.html) 
+\n\n 如果期待[Hello-AI](https://hello-ai.anzz.top/)的后续服务，请关注一下Hello-AI的[github](https://github.com/xxxily/hello-ai)，或加群沟通。
+\n\n 如果你发现免费列表里的网站都报废了，那就先歇歇吧，不要抱怨。
+\n 我不嫌弃你是白嫖怪，你也别一不能用就砸场子。
+\n ❤️ 听话，做彼此的天使。❤️  
+| 加微信群（可能失效） | 加我拉你入群（注明来自：AI） |
+| :----------------------------------------------------------: | :----------------------------------------------------------: |
+| ![qun](https://hello-ai.anzz.top/assets/qun.2ecd04f8.jpeg) | ![weixin](https://hello-ai.anzz.top/assets/WeChat.71209684.jpg) |
+    `
 
     if (Reflect.has(ErrorCodeMessage, code))
       return sendResponse({ type: 'Fail', message: ErrorCodeMessage[code] + friendlyTips })
