@@ -11,12 +11,14 @@ interface SessionResponse {
 export interface AuthState {
   token: string | undefined
   session: SessionResponse | null
+  vipKeyPanel: boolean
 }
 
 export const useAuthStore = defineStore('auth-store', {
   state: (): AuthState => ({
     token: getToken(),
     session: null,
+    vipKeyPanel: false,
   }),
 
   getters: {
@@ -45,6 +47,14 @@ export const useAuthStore = defineStore('auth-store', {
     removeToken() {
       this.token = undefined
       removeToken()
+    },
+
+    showVipKeyPanel() {
+      this.vipKeyPanel = true
+    },
+
+    hideVipKeyPanel() {
+      this.vipKeyPanel = false
     },
   },
 })

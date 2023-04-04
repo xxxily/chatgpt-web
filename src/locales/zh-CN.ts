@@ -19,6 +19,7 @@ export default {
     yes: '是',
     no: '否',
     confirm: '确定',
+    cancel: '取消',
     download: '下载',
     noData: '暂无数据',
     wrong: '好像出错了，请稍后再试。',
@@ -26,6 +27,7 @@ export default {
     failed: '操作失败',
     verify: '验证',
     unauthorizedTips: '未经授权，请先进行验证。',
+    hasAuthorizedTips: '我有专用授权码，让我进来',
   },
   chat: {
     newChatButton: '新建聊天',

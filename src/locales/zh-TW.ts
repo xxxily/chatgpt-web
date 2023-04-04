@@ -19,6 +19,7 @@ export default {
     yes: '是',
     no: '否',
     confirm: '確認',
+    cancel: '取消',
     download: '下載',
     noData: '目前無資料',
     wrong: '發生錯誤，請稍後再試。',
@@ -26,6 +27,7 @@ export default {
     failed: '操作失敗',
     verify: '驗證',
     unauthorizedTips: '未經授權，請先進行驗證。',
+    hasAuthorizedTips: '我有專用授權碼，讓我進來',
   },
   chat: {
     newChatButton: '新建對話',

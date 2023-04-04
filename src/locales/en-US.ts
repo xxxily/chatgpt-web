@@ -19,6 +19,7 @@ export default {
     yes: 'Yes',
     no: 'No',
     confirm: 'Confirm',
+    cancel: 'Cancel',
     download: 'Download',
     noData: 'No Data',
     wrong: 'Something went wrong, please try again later.',
@@ -26,6 +27,7 @@ export default {
     failed: 'Failed',
     verify: 'Verify',
     unauthorizedTips: 'Unauthorized, please verify first.',
+    hasAuthorizedTips: 'I have a special authorization code, let me in',
   },
   chat: {
     newChatButton: 'New Chat',

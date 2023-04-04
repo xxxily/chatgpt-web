@@ -5,11 +5,12 @@ import type { ChatMessage } from './chatgpt'
 import { chatConfig, chatReplyProcess, currentModel } from './chatgpt'
 import { auth } from './middleware/auth'
 import { rateLimiter } from './middleware/rateLimiter'
+import { commonLimiter } from './middleware/commonLimiter'
 import { strlen } from './middleware/strlen'
 import { isNotEmptyString } from './utils/is'
 import logsChat from './logsMod/chat'
 // import logsPrompt from './logsMod/prompt'
-import { createTempJwtToken } from './utils/helper'
+import { createTempJwtToken, verifyJwtToken } from './utils/helper'
 
 const app = express()
 const router = express.Router()
@@ -107,6 +108,29 @@ router.post('/verify', async (req, res) => {
 
     if (process.env.AUTH_SECRET_KEY !== token)
       throw new Error('密钥无效 | Secret key is invalid')
+
+    res.send({ status: 'Success', message: 'Verify successfully', data: null })
+  }
+  catch (error) {
+    res.send({ status: 'Fail', message: error.message, data: null })
+  }
+})
+
+router.post('/verify-vipkey', [commonLimiter], async (req, res) => {
+  try {
+    const { token } = req.body as { token: string }
+    if (!token)
+      throw new Error('Token empty')
+
+    try {
+      const userInfo = verifyJwtToken(token)
+
+      if (!userInfo)
+        throw new Error('Token is invalid')
+    }
+    catch (error) {
+      throw new Error('授权码无效 | Token is invalid')
+    }
 
     res.send({ status: 'Success', message: 'Verify successfully', data: null })
   }

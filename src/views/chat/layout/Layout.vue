@@ -4,6 +4,7 @@ import { NLayout, NLayoutContent } from 'naive-ui'
 import { useRouter } from 'vue-router'
 import Sider from './sider/index.vue'
 import Permission from './Permission.vue'
+import VipKey from './VipKey.vue'
 import { useBasicLayout } from '@/hooks/useBasicLayout'
 import { useAppStore, useAuthStore, useChatStore } from '@/store'
 
@@ -19,6 +20,8 @@ const { isMobile } = useBasicLayout()
 const collapsed = computed(() => appStore.siderCollapsed)
 
 const needPermission = computed(() => !!authStore.session?.auth && !authStore.token)
+
+const vipKeyPanel = computed(() => authStore.vipKeyPanel)
 
 const getMobileClass = computed(() => {
   if (isMobile.value)
@@ -47,5 +50,6 @@ const getContainerClass = computed(() => {
       </NLayout>
     </div>
     <Permission :visible="needPermission" />
+    <VipKey :visible="vipKeyPanel" />
   </div>
 </template>
