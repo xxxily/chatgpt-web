@@ -505,7 +505,13 @@ onUnmounted(() => {
               <span>有趣实用的玩法参见：<a href="https://hello-ai.anzz.top/home/chatgptPrompts.html" target="_blank" class="text-[#4b9e5f]">中文调教指南</a></span>
             </div>
             <div class="flex items-center justify-center mt-4 text-center text-neutral-300">
+              <span>访问ChatGPT网站受限请：<a href="https://hello-ai.anzz.top/home/airport.html" target="_blank" class="text-[#4b9e5f]">科学上网</a></span>
+            </div>
+            <!-- <div class="flex items-center justify-center mt-4 text-center text-neutral-300">
               <span>想要拥抱AI新赛道参见：<a href="https://hello-ai.anzz.top/home/sponsor.html" target="_blank" class="text-[#FF0000]">成为赞助方</a></span>
+            </div> -->
+            <div class="flex items-center justify-center mt-4 text-center text-neutral-300">
+              <span>需体验更多的服务请参见：&nbsp;<a href="https://hello-ai.anzz.top/home/buy.html" target="_blank" class="text-[#FF0000]">付费服务</a></span>
             </div>
             <div class="flex items-center justify-center mt-4 text-center text-neutral-300">
               <SvgIcon icon="ri:bubble-chart-fill" class="mr-2 text-3xl" />
