@@ -47,7 +47,7 @@ router.post('/chat-process', [
   // }
 
   try {
-    const { prompt, options = {}, systemMessage } = req.body as RequestProps
+    const { prompt, options = {}, systemMessage, temperature, top_p } = req.body as RequestProps
     let firstChunk = true
     const result = await chatReplyProcess({
       message: prompt,
@@ -57,6 +57,8 @@ router.post('/chat-process', [
         firstChunk = false
       },
       systemMessage,
+      temperature,
+      top_p,
     })
 
     try {
