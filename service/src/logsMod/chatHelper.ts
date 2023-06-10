@@ -48,7 +48,7 @@ export async function saveChat(data: ChatBody) {
 
   const result = {
     title: (data.title || data.messages[0]?.content || '').slice(0, 260),
-    uuid: data.uuid,
+    uuid: data.uuid || Date.now(),
     ip: data.realIp || data.ip || '',
     apikey: data.key || data.apikey,
     deviceId: data.deviceId || '',
