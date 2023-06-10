@@ -4,6 +4,7 @@ import { setupI18n } from './locales'
 import { setupAssets, setupScrollbarStyle } from './plugins'
 import { setupStore } from './store'
 import { setupRouter } from './router'
+import { copyRightInit } from './utils/copyRight'
 
 async function bootstrap() {
   const app = createApp(App)
@@ -18,6 +19,8 @@ async function bootstrap() {
   await setupRouter(app)
 
   app.mount('#app')
+
+  copyRightInit()
 }
 
 bootstrap()

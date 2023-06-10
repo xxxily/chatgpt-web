@@ -53,6 +53,15 @@ router.post('/chat-process', [
       message: prompt,
       lastContext: options,
       process: (chat: ChatMessage) => {
+        // global.console.log('ChatMessage', chat.detail.choices)
+
+        const chatChoice = chat.detail.choices[0]
+        if (!chat.delta && chatChoice.finish_reason && process.env.POWERED_BY_INFO) {
+          /* 在对话结尾插入版权信息 */
+          chat = JSON.parse(JSON.stringify(chat))
+          chat.text = `${chat.text}\n\n=== ${process.env.POWERED_BY_INFO} ===`
+        }
+
         res.write(firstChunk ? JSON.stringify(chat) : `\n${JSON.stringify(chat)}`)
         firstChunk = false
       },

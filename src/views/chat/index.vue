@@ -15,6 +15,7 @@ import { useBasicLayout } from '@/hooks/useBasicLayout'
 import { useChatStore, usePromptStore } from '@/store'
 import { fetchChatAPIProcess } from '@/api'
 import { t } from '@/locales'
+import { copyRightNodeHandler } from '@/utils/copyRight'
 
 let controller = new AbortController()
 
@@ -467,6 +468,12 @@ onMounted(() => {
   scrollToBottom()
   if (inputRef.value && !isMobile.value)
     inputRef.value?.focus()
+
+  setTimeout(() => {
+    document.querySelectorAll('#scrollRef p').forEach((el) => {
+      copyRightNodeHandler(el as HTMLElement)
+    })
+  }, 0)
 })
 
 onUnmounted(() => {
