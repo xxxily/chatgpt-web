@@ -22,6 +22,7 @@ export function fetchChatConfig<T = any>() {
 
 export function fetchChatAPIProcess<T = any>(
   params: {
+    uuid: string | number
     prompt: string
     options?: { conversationId?: string; parentMessageId?: string }
     signal?: GenericAbortSignal
@@ -31,6 +32,7 @@ export function fetchChatAPIProcess<T = any>(
   const authStore = useAuthStore()
 
   let data: Record<string, any> = {
+    uuid: params.uuid,
     prompt: params.prompt,
     options: params.options,
   }

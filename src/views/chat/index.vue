@@ -117,6 +117,7 @@ async function onConversation() {
     let lastText = ''
     const fetchChatAPIOnce = async () => {
       await fetchChatAPIProcess<Chat.ConversationResponse>({
+        uuid,
         prompt: message,
         options,
         signal: controller.signal,
@@ -248,6 +249,7 @@ async function onRegenerate(index: number) {
     let lastText = ''
     const fetchChatAPIOnce = async () => {
       await fetchChatAPIProcess<Chat.ConversationResponse>({
+        uuid,
         prompt: message,
         options,
         signal: controller.signal,

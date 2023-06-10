@@ -1,6 +1,8 @@
 import type { Request, Response } from 'express'
 import JSON_DB from '../utils/db'
 import type { RequestProps } from '../types'
+import type { ChatBody } from './chatHelper'
+import { saveChat } from './chatHelper'
 
 const chatDbOpts = {
   dir: './',
@@ -26,6 +28,39 @@ export default async function logsChat(req: Request, res: Response, chatData: an
 
     if (oldChat)
       hasOldChat = true
+  }
+
+  const chatBody: ChatBody = {
+    messages: [
+      {
+        content: reqBody.prompt,
+        role: 'user',
+      },
+      {
+        content: chatData.data.text,
+        role: 'assistant',
+      },
+    ],
+    prompt: '',
+    key: '',
+
+    title: reqBody.prompt.slice(0, 260),
+    uuid: reqBody.uuid || reqBody.options?.parentMessageId || chatData.data.id,
+    realIp: req.headers['x-real-ip'] || req.ip,
+    apikey: process.env.OPENAI_API_KEY || '',
+    deviceId: req.cookies['ACCESS-TOKEN'] || req.cookies['TEMP-ACCESS-TOKEN'] || '',
+    isPrivateKey: false,
+    temperature: reqBody.temperature || 0.8,
+    systemMessage: reqBody.systemMessage || '',
+    userAgent: req.headers['user-agent'],
+    referer: req.headers.referer,
+  }
+
+  try {
+    saveChat(chatBody)
+  }
+  catch (err) {
+    global.console.error('[logsChat][saveChat][error]', err)
   }
 
   /* 存储聊天记录 */
