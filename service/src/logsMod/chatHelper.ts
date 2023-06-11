@@ -58,6 +58,10 @@ export async function saveChat(data: ChatBody) {
     referer: data.referer || '',
   }
 
+  /* 修正1002这个固定uuid导致的bug */
+  if (result.uuid && result.uuid.toString() === '1002')
+    result.uuid = `1002_${Date.now()}`
+
   // global.console.log('----------[saveChat][result]----------', result)
 
   if (data.uuid) {
